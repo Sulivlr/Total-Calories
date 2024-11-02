@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
-import {useParams} from 'react-router-dom';
+import React, {useCallback, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import {Meals} from '../../constants';
 import axiosApi from '../../../axiosApi';
 
 const NewMeal = () => {
+  const navigate = useNavigate();
   const [meal, setMeal] = useState({
     time: '',
     description: '',
@@ -31,6 +32,7 @@ const NewMeal = () => {
         await axiosApi.put(`/meals/${mealId}.json`, apiMeal);
       } else {
         await axiosApi.post(`/meals.json`, apiMeal);
+        navigate('/');
       }
     } catch (error) {
       console.error(error);
@@ -38,6 +40,7 @@ const NewMeal = () => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <>
