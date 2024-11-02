@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {Meals} from '../../constants';
+import axiosApi from '../../../axiosApi';
 
 const NewMeal = () => {
   const [meal, setMeal] = useState({
@@ -8,16 +9,34 @@ const NewMeal = () => {
     description: '',
     calories: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const {mealId} = useParams();
+
 
   const onFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const {name, value} = event.target;
     setMeal((prev) => ({ ...prev, [name]: value }));
   };
 
-  const {mealId} = useParams();
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(meal);
+    try {
+      setIsLoading(true);
+      const apiMeal = {
+        ...meal,
+        calories: parseInt(meal.calories),
+      };
+
+      if (mealId) {
+        await axiosApi.put(`/meals/${mealId}.json`, apiMeal);
+      } else {
+        await axiosApi.post(`/meals.json`, apiMeal);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
