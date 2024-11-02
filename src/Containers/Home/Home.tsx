@@ -1,14 +1,13 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import axiosApi from '../../../axiosApi';
 import {ApiMeals, Meal} from '../../types';
-import {useNavigate, useParams} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Spinner from '../../components/Spinner/Spinner';
+import ButtonSpinner from '../../components/Spinner/ButtonSpinner';
 
 const Home = () => {
 
-  const navigate = useNavigate();
   const [meals, setMeals] = useState<Meal[]>([]);
-  const {mealId} = useParams();
   const [isFetching, setIsFetching] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -69,13 +68,15 @@ const Home = () => {
                   <strong>{meal.calories}</strong>
                 </div>
                 <div className="me-2">
-                  <button className="btn btn-primary me-2">Edit</button>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => deleteMeal(meal.id)}
-                  >
-                    Delete
-                  </button>
+                  <Link to={`/meals/${meal.id}/edit`} className="btn btn-primary me-2">Edit</Link>
+                  {isDeleting ? <ButtonSpinner/> : (
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => deleteMeal(meal.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
